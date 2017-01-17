@@ -1,0 +1,599 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" ng-app="myApp">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+  <title>Record Parser (Dynamic)</title>
+<link rel="stylesheet" href="bootstrap/css/bootstrap.css"></link>
+<style>
+header {
+	width:100%;
+}
+	
+body {
+    font-size:12px;
+	margin:0px;
+	padding:0px;
+	font-family:helvetica, verdana, arial, sans-serif;
+	background-color:white;
+}
+h1 {
+	margin:0px 0px 15px 0px;
+	padding:0px;
+	font-size:28px;
+	line-height:28px;
+	font-weight:900;
+	color:#ccc;
+}
+textarea {
+    width: 90%;
+	height: 100px;
+}
+h2 {
+	font-size:12px/14px;
+	margin:0px 0px 10px 0px;
+	padding:0px;
+    color:#ccc;
+}
+p {
+	font:11px/20px verdana, arial, helvetica, sans-serif;
+	margin:0px 0px 5px 0px;
+	padding:0px;
+}
+p, textarea, input {
+    font:11px/20px verdana, arial, helvetica, sans-serif;
+}
+#Content&gt;p {margin:0px;}
+#Content&gt;p+p {text-indent:30px;}
+
+/* a {
+	color:#09c;
+	font-size:11px;
+	text-decoration:none;
+	font-weight:600;
+	font-family:verdana, arial, helvetica, sans-serif;
+}
+	
+a:link {color:#09c;}
+a:visited {color:#07a;}
+a:hover {background-color:#eee;}
+ */
+
+#headerImg {
+	margin: 30px 0px 20px 30px;
+}
+#Header {
+    position: absolute;
+    top: 50px;
+    right: 100px;
+    width: 100px;
+	padding:17px 0px 0px 20px;
+	/* For IE5/Win's benefit height = [correct height] + [top padding] + [top and bottom border widths] */
+	height:33px; /* 14px + 17px + 2px = 33px */
+	background-color:rgb(255,102,0);
+	height:14px; /* the correct height */
+}
+#Content {
+    margin:30px 20px;
+}
+#Menu {
+	position:absolute;
+	top:100px;
+	left:20px;
+    width:172px;
+	padding:10px;
+	background-color:#eee;
+	border:1px dashed #999;
+	line-height:17px;
+	width:150px;
+}
+form {
+    margin:0px 0px 30px 0px;
+}
+form * {
+    font-size:10px;
+}
+input.text {
+    width:80%;
+}
+.narrow {
+    line-height:1.1em;
+}
+input {
+    margin:0px 0px 5px 0px;
+}
+table {
+    border-collapse:collapse;
+}
+th {
+    padding:2px 12px 2px 12px;
+    font:11px/20px verdana, arial, helvetica, sans-serif;
+	background-color:rgb(51,102,153);
+	color: #ffffff;
+}
+td {
+    padding:2px 4px 2px 4px;
+	font:11px/20px verdana, arial, helvetica, sans-serif;
+}
+.data {
+	font-family:monospace, courier, verdana, arial, helvetica, sans-serif;
+}
+.even {
+   background-color: #eee;
+}
+</style>
+<script src="./scripts/angular.min.js" type="text/javascript"></script>
+<script src="./scripts/angular-sanitize.min.js" type="text/javascript"></script>
+<script src="./scripts/jquery-1.7.2.min.js" type="text/javascript"></script>
+<script src="./scripts/lodash.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+// add the filter to your application module
+/**
+ * Field Limit Filter
+ * @Param text
+ * @Param length, default is 2000
+ * @return string
+ */
+
+
+
+
+var module1 = angular.module('myApp', ['ngSanitize']).
+    filter('fieldLimit', function () {
+        return function (text, maxlength) {
+            if (isNaN(maxlength))
+                maxlength = 10;
+			return text;
+        };
+    });
+
+var maxDataLength = 2000;
+
+module1.controller('ParseCtrl', function($scope) {
+	$scope.rec = '';
+	$scope.delimiter = '|';
+	$scope.useQuotes = true;
+	$scope.parsedRecord = []; 
+	$scope.result = '';
+    $scope.rawResult = '';
+    $scope.codeResult = '';
+	
+	$scope.parseRecord = function() {
+		$scope.rec = trimNonPrintableChars($scope.rec);
+		var length = $scope.rec.length;
+		while (length > maxDataLength) {
+			$scope.rec = $scope.rec.substring(0, length-1);
+			length = $scope.rec.length;
+		}
+		var fields = $scope.rec.split($scope.delimiter);
+	    $scope.parsedRecord = []; 
+		
+        $scope.result = '';
+        $scope.rawResult = '';
+        $scope.codeResult = '';
+		if (fields.length != 1 || fields[0].length > 0) {
+			// add the summary text
+			$scope.result += 
+				"Total length: " + $scope.rec.length + "  (" + (encodeURI($scope.rec).split(/%..|./).length - 1) + ")" + 
+				"&nbsp;&nbsp;&nbsp;Field count: " + fields.length;
+            // build the parsed record for the table
+            for(var i = 0; i < fields.length; i++) {
+            	if ($scope.useQuotes) {
+                    $scope.parsedRecord.push({index:i+1, value:"'" + fields[i] + "'", length:fields[i].length});
+            	}
+            	else {
+            		$scope.parsedRecord.push({index:i+1, value:fields[i], length:fields[i].length});
+            	}
+            	if (fields[i].length > 0) {
+	            	$scope.rawResult += "<br/>^" + fields[i] + "$";
+	            	$scope.codeResult += "<br/>    private String " + normalizeVariableName(fields[i]) + ";";
+            	}
+            }
+		}
+		$('#resultTable').trigger('tableChanged');
+	}
+});
+
+function trimNonPrintableChars(text) {
+	var regex = /[^\x20-\x7E\x0A]*/g; // this is all ascii text + new line
+	return text.replace(regex, "");
+}
+
+function trimNewLineChars(text) {
+    var regex = /[\x0A\x15]*/g;
+    var regexOddChars = /\/>/g;
+    text = text.replace(regex, "");
+    return text.replace(regexOddChars, "");
+}
+
+function normalizeVariableName(name) {
+    var newName = "";
+    var tokens = name.toLowerCase().split("_");
+    for (var i=0; i < tokens.length; i++) {
+        if (i==0) {
+            newName = newName + tokens[i];
+        }
+        else {
+            newName = newName + tokens[i].charAt(0).toUpperCase() + 
+                    tokens[i].substr(1);
+        }
+    }
+    return newName;
+}
+
+var floatChars = /\d+|(\d*\.\d+)/;
+var reFloat = /^((\d+(\.\d*)?)|((\d*\.)?\d+))$/;
+function validateFloat(input) {
+  for (i = 0; i < input.length; i++)
+  {
+//   if (!floatChars.test(input))
+//   {
+//     return false;
+//   }
+  }
+  if (!reFloat.test(input))
+    return false;
+  return true;
+}
+
+function testSubmit(e) {
+  var key;
+  if(window.event) {
+    key = window.event.keyCode;  //IE
+  }
+  else {
+    key = e.which;  //firefox
+  }
+//  alert(key);
+  return key!=13;
+}
+
+
+module1.controller('FitnesseMappingCtrl', function($scope) {
+    $scope.locators = '';
+    $scope.delimiter = /[ \|\t]/g;
+    
+    $scope.parseLocator = function() {
+    	$scope.locators = trimNewLineChars($scope.locators);
+        var fields = $scope.locators.split($scope.delimiter);
+        $scope.parsedLocator = []; 
+        
+        var cmd = '';
+        var loc = '';
+        var rem = '';
+        if (fields.length != 1 || fields[0].length > 0) {
+            // loop through each token in the full string
+            for(var i = 0; i < fields.length; i++) {
+            	// check if the value ends with ';' or the next value starts with scLocator
+            	if (/;$/.test(fields[i]) || (fields.length > i+1 && /^scLocator/.test(fields[i+1]))) {
+            		// starting a new record - push the current record if there is one
+            		if (cmd.length > 0) {
+            		    $scope.parsedLocator.push({command:cmd.trim(), locator:loc.trim(), remainder:rem.substring(0,15)});
+            		    rem = '';
+            		}
+            		// and start a new one
+            		cmd = fields[i];
+                    loc = fields[++i];
+            	}
+            	else {
+            		rem += fields[i];
+            		// if we're at the end of the array, push the record
+            	}
+                if (fields.length == i+1) {
+                    $scope.parsedLocator.push({command:cmd.trim(), locator:loc.trim(), remainder:rem.substring(0,15)});
+                }
+            }
+        }
+        $('#locatorResultTable').trigger('tableChanged');
+    }
+});
+
+module1.controller('FormatCtrl', function($scope) {
+    $scope.locators = '';
+    $scope.delimiter = /[ \|\t]/g;
+    
+    $scope.parseLocator = function() {
+    	$scope.locators = trimNewLineChars($scope.locators);
+        var fields = $scope.locators.split($scope.delimiter);
+        $scope.parsedLocator = []; 
+        
+        var cmd = '';
+        var loc = '';
+        var rem = '';
+        if (fields.length != 1 || fields[0].length > 0) {
+            // loop through each token in the full string
+            for(var i = 0; i < fields.length; i++) {
+            	// check if the value ends with ';' or the next value starts with scLocator
+            	if (/;$/.test(fields[i]) || (fields.length > i+1 && /^scLocator/.test(fields[i+1]))) {
+            		// starting a new record - push the current record if there is one
+            		if (cmd.length > 0) {
+            		    $scope.parsedLocator.push({command:cmd.trim(), locator:loc.trim(), remainder:rem.substring(0,15)});
+            		    rem = '';
+            		}
+            		// and start a new one
+            		cmd = fields[i];
+                    loc = fields[++i];
+            	}
+            	else {
+            		rem += fields[i];
+            		// if we're at the end of the array, push the record
+            	}
+                if (fields.length == i+1) {
+                    $scope.parsedLocator.push({command:cmd.trim(), locator:loc.trim(), remainder:rem.substring(0,15)});
+                }
+            }
+        }
+        $('#locatorResultTable').trigger('tableChanged');
+    }
+});
+
+module1.controller('GroovyCollPrettyPrintCtrl', function($scope) {
+    $scope.groovyCollection = '';
+    $scope.formattedCollection = '';
+    $scope.parseCollection = function() {
+        $scope.formattedCollection = '';
+        var indent = '';
+        var prev = '';
+        var inQuotes = false;
+        for (var i = 0; i < $scope.groovyCollection.length; i++) {
+            ch = $scope.groovyCollection.charAt(i);
+            if (ch == '\'' || ch == '\"') {
+                inQuotes = !inQuotes;
+            }
+            
+            if ((ch != '\t' && ch != '\n' && ch != ' ') || inQuotes) {
+                switch (ch) {
+                    case '[' : 
+                        if (prev == ':') {
+                            $scope.formattedCollection += '<br />' + indent;
+                        }
+                        $scope.formattedCollection += ch + '<br />';
+                        indent += '&nbsp;&nbsp;&nbsp;&nbsp;';
+                        $scope.formattedCollection += indent;
+                        break;
+                    case ',' : 
+                        $scope.formattedCollection += ch + '<br />' + indent;
+                        break;
+                    case ']' : 
+                        indent = indent.substring(24);
+                        $scope.formattedCollection += '<br />' + indent + ch;
+                        break;
+                    default : $scope.formattedCollection += ch; break;
+                }
+                prev = ch;
+            }
+        }
+    }
+});
+
+module1.controller('JsonPrettyPrintCtrl', function($scope) {
+
+    $scope.jsonCollection = '';
+    $scope.formattedCollection = '';
+    $scope.jsonData;
+    $scope.truncFields = true;
+    $scope.showHash = true;
+    $scope.showValue = true;
+
+    $scope.parseCollection = function() {
+
+
+        if ($scope.jsonCollection.length > 0) {
+            try {
+                $scope.jsonData = JSON.parse($scope.jsonCollection);
+                $scope.formattedCollection = '';
+$scope.formattedCollection = printChildren('$', $scope.jsonData, $scope.truncFields, $scope.showHash, $scope.showValue);
+            }
+            catch (err) {
+                $scope.formattedCollection = 'Invalid JSON ';
+            }
+        }
+
+    }
+});
+
+
+
+function printChildren(par, coll, trunc, showHash, showVal) {
+    var pref = par;
+    var str = '';
+
+    var hashStr = showHash ? '{}' : '';
+
+    if (_.isArray(coll)) {
+        if (coll.length == 0) {
+            str = str + printChildren(pref + '[]', '', trunc, showHash, showVal);
+        }
+        else {
+            $.each(coll, function(idx, val) {
+                if (idx == 0 || !trunc) {
+                    var index = (trunc && coll.length > 1) ? '*' : idx;
+                    str = str + printChildren(pref + '[' + index + ']', val, trunc, showHash, showVal);
+                }
+            });
+        }
+    }
+    else if (_.isObject(coll)) {
+        var i = 0;
+        if (coll.length == 0) {
+            str = str + printChildren(pref + (pref == '$' ? '.' : hashStr), '', trunc, showHash, showVal);
+        }
+        else {
+            $.each(coll, function(key, val) {
+                    // if (i == 0 || !trunc) {
+                        str = str + printChildren(pref + (pref == '$' ? '.' : hashStr+'.') + key, val, trunc, showHash, showVal);
+                    // }
+                    // i = i + 1;
+            });
+        }
+    }
+    else {
+        if ('string' === typeof(coll)) coll = '"' + coll + '"';
+        str = str + pref + (showVal ? "\t::\t" + coll : '') + "<br />";
+    }
+
+    return str;
+}
+
+// function printChildren(par, coll, trunc) {
+//     var pref = par;
+//     var str = '';
+
+//     _(coll).forEach(function(value, key) {
+
+//         if (_.isArray(value)) {
+//             str = str + printChildren(pref + '.' + key + '[]', value);
+//         }
+//         else if (_.isObject(value)) {
+//             if (isNaN(key)) {
+//                 str = str + printChildren(pref + '.' + key + '{}', value);
+//             }
+//             else if (key === 0 || trunc) {
+//                 str = str + printChildren(pref, value);
+//             }
+//         }
+//         else {
+//             if ('string' === typeof(value)) value = '"' + value + '"';
+//             str = str + pref + '.' + key + "\t::\t" + value + "<br />";
+//         }
+//     });
+//     return str;
+// }
+
+
+
+
+</script>
+</head>
+
+<body>
+    <header id="header">
+
+	</header>
+	
+    <!--    <div id="Menu">No menu yet</div> -->
+    <div id="Content" data-ng-controller='ParseCtrl'>
+        <h1>Record Parser</h1>
+        <p>Enter the record to be parsed</p>
+
+	    <p>
+            <textarea id="record" type="text" data-ng-model="rec" onfocus="select();" data-ng-change="parseRecord()" data-ng-model-instant >
+            </textarea>
+        </p>
+        <p>Delimiter</p>
+        <p>
+            <input type="text" data-ng-model="delimiter" onfocus="select();" data-ng-model-instant data-ng-change="parseRecord()" />
+        </p>
+        <p>
+            <input type="checkbox" id="quotetext" value="on" checked="true" data-ng-model="useQuotes" 
+                    data-ng-model-instant data-ng-change="parseRecord()" /> Use quotes
+            </p>
+	    <p>
+            <!-- <input type="submit" value="Submit"/> -->
+	    </p>
+	    <p>
+	        <input type='text' id='floatField' onkeyup='validateFloat(this.value);'/><img id='resultImg' src='images/question-mark.gif'/>
+            <br/>
+            <div id='submitCount'></div>
+            </p>
+        </form>
+
+        <h2>Results</h2>
+        <div>
+	        <p ng-bind-html="result"></p>
+	        
+	        <table id="resultTable" border="1">
+	            <thead>
+	                <th>Index</th>
+	                <th>Data</th>
+	                <th>Length</th>
+	            </thead>
+	            <tbody id="resultBody">
+	               <tr ng-repeat="record in parsedRecord" ng-class-even="'even'">
+                       <td align="center">{{record.index}}</td>
+                       <td>{{record.value}}</td>
+                       <td align="center">{{record.length}}</td>
+	               </tr>
+	            </tbody>
+	        </table>
+	        <br/>
+	        <div ng-bind-html="codeResult"></div>
+	        <br/>
+	        <div ng-bind-html="rawResult"></div>
+        </div>
+    </div>
+
+    <div id="Content" ng-controller='JsonPrettyPrintCtrl'>
+        <h1>JSON Formatter</h1>
+        <p>Enter the JSON data to be parsed</p>
+
+        <p>
+            <textarea id="jsonCollection" type="text"
+                ng-model="jsonCollection" onfocus="select();"
+                ng-change="parseCollection()"
+                ng-model-instant ></textarea>
+        </p>
+        <p>
+            <input type="checkbox" id="trunc" value="on" checked="true" data-ng-model="truncFields" 
+                    data-ng-model-instant data-ng-change="parseCollection()" /> Truncate Arrays (show only 1st instance)
+            </p>
+            <input type="checkbox" id="trunc" value="on" checked="true" data-ng-model="showValue" 
+                    data-ng-model-instant data-ng-change="parseCollection()" /> Show Values
+            </p>
+            <input type="checkbox" id="trunc" value="on" checked="true" data-ng-model="showHash" 
+                    data-ng-model-instant data-ng-change="parseCollection()" /> Show Hash Braces
+            </p>
+        <p>
+
+        <h2>Formatted Collection</h2>
+        <div class="narrow" ng-bind-html="formattedCollection" ></div>
+    </div>
+
+    <div id="Content" ng-controller='GroovyCollPrettyPrintCtrl'>
+        <h1>Groovy Map Formatter</h1>
+        <p>Enter the groovy map data to be parsed</p>
+
+        <p>
+            <textarea id="groovyCollection" type="text"
+                ng-model="groovyCollection" onfocus="select();"
+                ng-change="parseCollection()"
+                ng-model-instant ></textarea>
+        </p>
+
+        <h2>Formatted Collection</h2>
+        <div class="narrow" ng-bind-html="formattedCollection" ></div>
+    </div>
+    
+    <div id="Content" data-ng-controller='FormatCtrl'>
+        <h1>Locator Parser</h1>
+        <p>Enter the locators to be parsed</p>
+		I'm not sure what this does.  It doesn't seem to work now.  At one point, it seems to have been used to parse
+		and display Selenium commands - maybe to easier understand why particular commands or locators were failing.
+        <p>
+            <textarea id="locators" type="text" data-ng-model="locators"
+                onfocus="select();" data-ng-change="parseLocator()"
+                data-ng-model-instant ></textarea>
+        </p>
+
+        <h3>Parsed Locators</h3>
+        <div>
+            <table id="locatorResultTable" border="1">
+                <thead>
+                    <th>Command</th>
+                    <th>Locator</th>
+                    <th>Remainder</th>
+                </thead>
+                <tbody id="resultBody">
+                   <tr ng-repeat="record in parsedLocator" ng-class-even="'even'">
+                       <td align="center">{{record.command}}</td>
+                       <td id="locValue">{{record.locator}}</td>
+                       <td align="center">{{record.remainder}}</td>
+                   </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+</body>
+</html>
