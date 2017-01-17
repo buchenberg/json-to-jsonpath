@@ -1,26 +1,30 @@
 {
-  "name": "json-jsonpath",
+  "name": "json-to-jsonpath",
   "version": "1.0.0",
-  "description": "",
+  "description": "A simple JSON to JSONPath converter",
   "main": "index.js",
   "scripts": {
+    "start": "npm run dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@gitlab.com/buchenberger/JSON-to-JSONPath.git"
+    "url": "git+ssh://git@gitlab.com/buchenberger/json-to-jsonpath.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://gitlab.com/buchenberger/JSON-to-JSONPath/issues"
+    "url": "https://gitlab.com/buchenberger/json-to-jsonpath/issues"
   },
-  "homepage": "https://gitlab.com/buchenberger/JSON-to-JSONPath#README",
+  "homepage": "https://gitlab.com/buchenberger/json-to-jsonpath#README",
   "dependencies": {
     "angular": "^1.6.1",
     "angular-sanitize": "^1.6.1",
     "bootstrap": "^3.3.7",
     "jquery": "^3.1.1",
     "lodash": "^4.17.4"
+  },
+  "devDependencies": {
+    "lite-server": "^2.2.2"
   }
 }
