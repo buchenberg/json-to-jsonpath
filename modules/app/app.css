@@ -1,0 +1,115 @@
+header {
+	width:100%;
+}
+	
+body {
+    font-size:12px;
+	margin:0px;
+	padding:0px;
+	font-family:helvetica, verdana, arial, sans-serif;
+	background-color:white;
+}
+h1 {
+	margin:0px 0px 15px 0px;
+	padding:0px;
+	font-size:28px;
+	line-height:28px;
+	font-weight:900;
+	color:#ccc;
+}
+textarea {
+    width: 90%;
+	height: 100px;
+}
+h2 {
+	font-size:12px/14px;
+	margin:0px 0px 10px 0px;
+	padding:0px;
+    color:#ccc;
+}
+p {
+	font:11px/20px verdana, arial, helvetica, sans-serif;
+	margin:0px 0px 5px 0px;
+	padding:0px;
+}
+p, textarea, input {
+    font:11px/20px verdana, arial, helvetica, sans-serif;
+}
+#Content&gt;p {margin:0px;}
+#Content&gt;p+p {text-indent:30px;}
+
+/* a {
+	color:#09c;
+	font-size:11px;
+	text-decoration:none;
+	font-weight:600;
+	font-family:verdana, arial, helvetica, sans-serif;
+}
+	
+a:link {color:#09c;}
+a:visited {color:#07a;}
+a:hover {background-color:#eee;}
+ */
+
+#headerImg {
+	margin: 30px 0px 20px 30px;
+}
+#Header {
+    position: absolute;
+    top: 50px;
+    right: 100px;
+    width: 100px;
+	padding:17px 0px 0px 20px;
+	/* For IE5/Win's benefit height = [correct height] + [top padding] + [top and bottom border widths] */
+	height:33px; /* 14px + 17px + 2px = 33px */
+	background-color:rgb(255,102,0);
+	height:14px; /* the correct height */
+}
+#Content {
+    margin:30px 20px;
+}
+#Menu {
+	position:absolute;
+	top:100px;
+	left:20px;
+    width:172px;
+	padding:10px;
+	background-color:#eee;
+	border:1px dashed #999;
+	line-height:17px;
+	width:150px;
+}
+form {
+    margin:0px 0px 30px 0px;
+}
+form * {
+    font-size:10px;
+}
+input.text {
+    width:80%;
+}
+.narrow {
+    line-height:1.1em;
+}
+input {
+    margin:0px 0px 5px 0px;
+}
+table {
+    border-collapse:collapse;
+}
+th {
+    padding:2px 12px 2px 12px;
+    font:11px/20px verdana, arial, helvetica, sans-serif;
+	background-color:rgb(51,102,153);
+	color: #ffffff;
+}
+td {
+    padding:2px 4px 2px 4px;
+	font:11px/20px verdana, arial, helvetica, sans-serif;
+}
+.data {
+	font-family:monospace, courier, verdana, arial, helvetica, sans-serif;
+}
+.even {
+   background-color: #eee;
+}

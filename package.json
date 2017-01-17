@@ -1,0 +1,26 @@
+{
+  "name": "json-jsonpath",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/buchenberger/JSON-to-JSONPath.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/buchenberger/JSON-to-JSONPath/issues"
+  },
+  "homepage": "https://gitlab.com/buchenberger/JSON-to-JSONPath#README",
+  "dependencies": {
+    "angular": "^1.6.1",
+    "angular-sanitize": "^1.6.1",
+    "bootstrap": "^3.3.7",
+    "jquery": "^3.1.1",
+    "lodash": "^4.17.4"
+  }
+}

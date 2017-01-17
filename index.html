@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="App" class="no-js">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>JSON to JSONPath</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="modules/app/app.css">
+</head>
+
+<body>
+    <div id="Content" ng-controller="JsonToJPathCtrl">
+        <h1>JSON Formatter</h1>
+        <p>Enter the JSON data to be parsed</p>
+        <p>
+            <textarea id="jsonCollection" type="text" ng-model="jsonCollection" onfocus="select();" ng-change="parseCollection()" ng-model-instant></textarea>
+        </p>
+        <p>
+            <input type="checkbox" id="trunc" value="on" checked="true" data-ng-model="truncFields" data-ng-model-instant data-ng-change="parseCollection()"
+            /> Truncate Arrays (show only 1st instance)
+        </p>
+        <input type="checkbox" id="trunc" value="on" checked="true" data-ng-model="showValue" data-ng-model-instant data-ng-change="parseCollection()"
+        /> Show Values
+        </p>
+        <input type="checkbox" id="trunc" value="on" checked="true" data-ng-model="showHash" data-ng-model-instant data-ng-change="parseCollection()"
+        /> Show Hash Braces
+        </p>
+        <p>
+            <h2>Formatted Collection</h2>
+            <div class="narrow" ng-bind-html="formattedCollection"></div>
+    </div>
+    <script src="node_modules/angular/angular.js"></script>
+    <script src="node_modules/angular-sanitize/angular-sanitize.min.js"></script>
+    <script src="node_modules/jquery/dist/jquery.js"></script>
+    <script src="node_modules/lodash/lodash.min.js"></script>
+    <script src="modules/app/app.js"></script>
+</body>
+
+</html>
