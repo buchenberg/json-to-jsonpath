@@ -35,8 +35,8 @@ p {
 p, textarea, input {
     font:11px/20px verdana, arial, helvetica, sans-serif;
 }
-#Content&gt;p {margin:0px;}
-#Content&gt;p+p {text-indent:30px;}
+/*#Content&gt;p {margin:0px;}
+#Content&gt;p+p {text-indent:30px;}*/
 
 /* a {
 	color:#09c;

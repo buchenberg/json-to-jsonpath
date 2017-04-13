@@ -7,8 +7,10 @@
     <title>JSON to JSONPath</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="modules/app/app.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="app/app.css">
 </head>
 
 <body>
@@ -32,11 +34,8 @@
             <h2>Formatted Collection</h2>
             <div class="narrow" ng-bind-html="formattedCollection"></div>
     </div>
-    <script src="node_modules/angular/angular.js"></script>
-    <script src="node_modules/angular-sanitize/angular-sanitize.min.js"></script>
-    <script src="node_modules/jquery/dist/jquery.js"></script>
-    <script src="node_modules/lodash/lodash.min.js"></script>
-    <script src="modules/app/app.js"></script>
+    <script src="js/vendor.bundle.js"></script>
+    <script src="js/app.bundle.js"></script>
 </body>
 
 </html>

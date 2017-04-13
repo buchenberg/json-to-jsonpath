@@ -1,4 +1,8 @@
-var app = angular.module('App', ['ngSanitize'])
+require('lodash');
+require('angular-sanitize');
+require('./app.css');
+
+var app = angular.module('App', [require('angular-sanitize')])
 
 app.filter('fieldLimit', function () {
     return function (text, maxlength) {
