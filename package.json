@@ -5,6 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run dev",
+    "bundle": "webpack",
+    "dev": "webpack-dev-server --content-base .",
+    "predev": "npm run bundle",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
